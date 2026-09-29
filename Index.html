@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Aviator Account Manager</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root{
+    --red:#ef233c;
+    --red-dark:#b9162b;
+    --orange:#ff8a00;
+    --black:#06080c;
+    --dark:#0d1118;
+    --dark2:#151b24;
+    --muted:#8994a5;
+    --line:#e3e7ed;
+    --green:#16a34a;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    padding:14px;
+    font-family:Inter,Arial,sans-serif;
+    background:
+        radial-gradient(circle at 10% 0%,rgba(239,35,60,.2),transparent 30%),
+        radial-gradient(circle at 90% 100%,rgba(255,138,0,.1),transparent 35%),
+        #020305;
+}
+
+.app{
+    width:min(460px,100%);
+    height:min(820px,calc(100vh - 28px));
+    min-height:640px;
+    margin:auto;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    border-radius:27px;
+    background:#f5f7fa;
+    box-shadow:0 30px 80px rgba(0,0,0,.48);
+}
+
+/* HEADER */
+
+.header{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px;
+    overflow:hidden;
+    color:white;
+    background:
+        linear-gradient(135deg,#180407,#7e1020 55%,#ef233c);
+}
+
+.header:after{
+    content:"";
+    position:absolute;
+    width:220px;
+    height:220px;
+    right:-110px;
+    top:-135px;
+    border-radius:50%;
+    background:rgba(255,255,255,.08);
+}
+
+.logo{
+    position:relative;
+    z-index:2;
+    width:48px;
+    height:48px;
+    display:grid;
+    place-items:center;
+    border-radius:15px;
+    background:rgba(255,255,255,.13);
+    border:1px solid rgba(255,255,255,.2);
+    font-size:12px;
+    font-weight:800;
+}
+
+.header-info{
+    position:relative;
+    z-index:2;
+}
+
+.header-info h1{
+    font-size:16px;
+    font-weight:800;
+}
+
+.header-info p{
+    margin-top:3px;
+    font-size:9px;
+    opacity:.76;
+}
+
+.status{
+    position:relative;
+    z-index:2;
+    margin-left:auto;
+    padding:6px 9px;
+    border-radius:20px;
+    background:rgba(0,0,0,.18);
+    font-size:8px;
+    font-weight:700;
+}
+
+.status i{
+    display:inline-block;
+    width:6px;
+    height:6px;
+    margin-right:4px;
+    border-radius:50%;
+    background:#4ade80;
+    box-shadow:0 0 8px #4ade80;
+}
+
+/* CHAT */
+
+.messages{
+    flex:1;
+    overflow-y:auto;
+    padding:18px 14px 16px;
+    background:#f6f8fb;
+    scroll-behavior:smooth;
+}
+
+.message{
+    display:flex;
+    max-width:94%;
+    margin-bottom:14px;
+    animation:appear .28s ease;
+}
+
+@keyframes appear{
+    from{
+        opacity:0;
+        transform:translateY(7px);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.bot{
+    align-items:flex-end;
+}
+
+.user{
+    margin-left:auto;
+    justify-content:flex-end;
+}
+
+.bot-avatar{
+    flex:0 0 28px;
+    width:28px;
+    height:28px;
+    display:grid;
+    place-items:center;
+    margin-right:7px;
+    border-radius:9px;
+    color:white;
+    background:linear-gradient(135deg,#ef233c,#a30e20);
+    font-size:7px;
+    font-weight:800;
+}
+
+.bubble{
+    padding:12px 14px;
+    border-radius:17px;
+    font-size:12.5px;
+    line-height:1.55;
+}
+
+.bot .bubble{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:17px 17px 17px 5px;
+    box-shadow:0 3px 9px rgba(0,0,0,.035);
+}
+
+.user .bubble{
+    color:#fff;
+    background:linear-gradient(135deg,#ef233c,#c9162e);
+    border-radius:17px 17px 5px 17px;
+}
+
+.time{
+    margin-top:5px;
+    font-size:8px;
+    opacity:.55;
+}
+
+/* CODE BLOCK */
+
+.system-code{
+    margin-top:10px;
+    padding:12px;
+    overflow-x:auto;
+    border-radius:12px;
+    background:#070b12;
+    color:#cbd5e1;
+    font-family:"JetBrains Mono",monospace;
+    font-size:9.5px;
+    line-height:1.7;
+}
+
+.comment{
+    color:#64748b;
+}
+
+.key{
+    color:#60a5fa;
+}
+
+.value{
+    color:#4ade80;
+}
+
+/* SITE INPUT */
+
+.site-box{
+    margin-top:10px;
+}
+
+.site-box input{
+    width:100%;
+    height:44px;
+    padding:0 12px;
+    outline:none;
+    border:1px solid #dce2e9;
+    border-radius:11px;
+    background:#f8fafc;
+    color:#111827;
+    font-size:11px;
+}
+
+.site-box input:focus{
+    border-color:#ef6878;
+    background:#fff;
+    box-shadow:0 0 0 3px rgba(239,35,60,.06);
+}
+
+.site-box button{
+    width:100%;
+    height:40px;
+    margin-top:7px;
+    border:0;
+    border-radius:10px;
+    color:#fff;
+    background:#111827;
+    font-size:10px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* PLANS */
+
+.price-list{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-top:10px;
+}
+
+.price{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px;
+    border:1px solid #e0e5eb;
+    border-radius:11px;
+    background:#fff;
+    text-align:left;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.price:hover{
+    border-color:#ee9ca6;
+    background:#fffafa;
+}
+
+.price.selected{
+    border-color:#ef233c;
+    background:#fff1f3;
+}
+
+.price-left{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.price-number{
+    width:25px;
+    height:25px;
+    display:grid;
+    place-items:center;
+    border-radius:7px;
+    color:#ef233c;
+    background:#fff0f2;
+    font-size:9px;
+    font-weight:800;
+}
+
+.price-name{
+    color:#111827;
+    font-size:10px;
+    font-weight:800;
+}
+
+.price-sub{
+    margin-top:2px;
+    color:#98a2b1;
+    font-size:8px;
+}
+
+.price-cost{
+    color:#111827;
+    font-size:10px;
+    font-weight:800;
+}
+
+/* BUTTONS */
+
+.quick-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    margin-top:10px;
+}
+
+.quick-btn{
+    min-height:40px;
+    padding:9px;
+    border:1px solid #dce2e9;
+    border-radius:11px;
+    background:#fff;
+    color:#293548;
+    font-size:10px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.quick-btn.primary{
+    color:#fff;
+    border:0;
+    background:linear-gradient(135deg,#ef233c,#c9162e);
+}
+
+/* TYPING */
+
+.typing{
+    display:flex;
+    gap:4px;
+    padding:5px 2px;
+}
+
+.dot{
+    width:5px;
+    height:5px;
+    border-radius:50%;
+    background:#9ca3af;
+    animation:blink 1.2s infinite;
+}
+
+.dot:nth-child(2){
+    animation-delay:.2s;
+}
+
+.dot:nth-child(3){
+    animation-delay:.4s;
+}
+
+@keyframes blink{
+    0%,80%,100%{opacity:.2}
+    40%{opacity:1}
+}
+
+/* INPUT */
+
+.input-area{
+    display:flex;
+    gap:8px;
+    padding:9px 10px;
+    background:#fff;
+    border-top:1px solid var(--line);
+}
+
+.input-area input{
+    flex:1;
+    min-width:0;
+    height:44px;
+    padding:0 14px;
+    outline:none;
+    border:1px solid #dfe4eb;
+    border-radius:12px;
+    background:#f8fafc;
+    font-size:12px;
+}
+
+.input-area input:focus{
+    border-color:#ef6878;
+    background:#fff;
+}
+
+.send{
+    width:44px;
+    height:44px;
+    flex:0 0 44px;
+    border:0;
+    border-radius:12px;
+    color:#fff;
+    background:linear-gradient(135deg,#ef233c,#c9162e);
+    font-size:18px;
+    cursor:pointer;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    height:62px;
+    background:#fff;
+    border-top:1px solid #e4e8ed;
+}
+
+.nav-btn{
+    position:relative;
+    border:0;
+    background:transparent;
+    color:#8993a1;
+    cursor:pointer;
+    font-family:Inter,sans-serif;
+    font-size:9px;
+    font-weight:700;
+}
+
+.nav-btn span{
+    display:block;
+    margin-top:3px;
+}
+
+.nav-btn.active{
+    color:#ef233c;
+}
+
+.nav-btn.active:before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:28%;
+    right:28%;
+    height:2px;
+    background:#ef233c;
+    border-radius:0 0 4px 4px;
+}
+
+/* ADMIN PANEL */
+
+.admin-panel{
+    position:absolute;
+    left:50%;
+    bottom:72px;
+    width:min(430px,calc(100% - 22px));
+    padding:15px;
+    transform:translate(-50%,15px);
+    opacity:0;
+    pointer-events:none;
+    border:1px solid #e1e5eb;
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 18px 50px rgba(0,0,0,.2);
+    transition:.25s;
+    z-index:50;
+}
+
+.admin-panel.show{
+    transform:translate(-50%,0);
+    opacity:1;
+    pointer-events:auto;
+}
+
+.admin-panel h3{
+    font-size:13px;
+}
+
+.admin-panel p{
+    margin-top:5px;
+    color:#7c8797;
+    font-size:10px;
+    line-height:1.5;
+}
+
+.admin-action{
+    width:100%;
+    height:42px;
+    margin-top:11px;
+    border:0;
+    border-radius:11px;
+    color:#fff;
+    background:linear-gradient(135deg,#ef233c,#c9162e);
+    font-size:10px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+/* MOBILE */
+
+@media(max-width:480px){
+
+    body{
+        padding:0;
+    }
+
+    .app{
+        width:100%;
+        height:100vh;
+        min-height:100vh;
+        border-radius:0;
+    }
+
+    .messages{
+        padding:15px 11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="header">
+
+        <div class="logo">AVI</div>
+
+        <div class="header-info">
+            <h1>Aviator Account Manager</h1>
+            <p>Account management assistant</p>
+        </div>
+
+        <div class="status">
+            <i></i> ONLINE
+        </div>
+
+    </header>
+
+
+    <main id="messages" class="messages"></main>
+
+
+    <form id="form" class="input-area">
+
+        <input
+            id="input"
+            type="text"
+            autocomplete="off"
+            placeholder="Enter your phone number..."
+        >
+
+        <button class="send" type="submit">
+            →
+        </button>
+
+    </form>
+
+
+    <!-- ADMIN POPUP -->
+
+    <div id="adminPanel" class="admin-panel">
+
+        <h3>Admin communication</h3>
+
+        <p>
+            Use the administrator chat to send the
+            current request details for review.
+        </p>
+
+        <button
+            class="admin-action"
+            onclick="openAdminChat()">
+
+            Open Admin Chat
+
+        </button>
+
+    </div>
+
+
+    <!-- BOTTOM NAV -->
+
+    <nav class="bottom-nav">
+
+        <button
+            class="nav-btn active"
+            onclick="navHome(this)">
+
+            HOME
+            <span>Assistant</span>
+
+        </button>
+
+
+        <button
+            class="nav-btn"
+            onclick="showRequest(this)">
+
+            REQUEST
+            <span>My request</span>
+
+        </button>
+
+
+        <button
+            class="nav-btn"
+            onclick="toggleAdmin(this)">
+
+            ADMIN
+            <span>Chat</span>
+
+        </button>
+
+    </nav>
+
+</div>
+
+
+<script>
+
+/* ==================================================
+   ADMIN CHANNEL
+   Keep the actual contact destination private.
+   Nothing here is displayed inside the interface.
+================================================== */
+
+const ADMIN_CHAT_NUMBER = "254797124175";
+
+
+/* ==================================================
+   PRICING
+================================================== */
+
+const PLANS = [
+
+    {
+        name:"1 Hour",
+        detail:"Short access period",
+        price:1000
+    },
+
+    {
+        name:"2 Hours",
+        detail:"Extended session",
+        price:1800
+    },
+
+    {
+        name:"4 Hours",
+        detail:"Extended access",
+        price:3200
+    },
+
+    {
+        name:"6 Hours",
+        detail:"Long session",
+        price:4500
+    },
+
+    {
+        name:"12 Hours",
+        detail:"Half-day period",
+        price:7500
+    },
+
+    {
+        name:"1 Day",
+        detail:"24-hour period",
+        price:10000
+    },
+
+    {
+        name:"3 Days",
+        detail:"Three-day period",
+        price:24000
+    },
+
+    {
+        name:"7 Days",
+        detail:"Weekly period",
+        price:45000
+    },
+
+    {
+        name:"14 Days",
+        detail:"Two-week period",
+        price:75000
+    },
+
+    {
+        name:"21 Days",
+        detail:"Extended period",
+        price:100000
+    },
+
+    {
+        name:"30 Days",
+        detail:"Thirty-day period",
+        price:130000
+    },
+
+    {
+        name:"Monthly",
+        detail:"Maximum available period",
+        price:130000
+    }
+
+];
+
+
+/* ==================================================
+   STATE
+================================================== */
+
+let step = 0;
+
+let account = {
+    phone:"",
+    bettingSite:"",
+    plan:null,
+    requestId:"",
+    status:""
+};
+
+
+/* ==================================================
+   ELEMENTS
+================================================== */
+
+const messages =
+    document.getElementById("messages");
+
+const input =
+    document.getElementById("input");
+
+const form =
+    document.getElementById("form");
+
+const adminPanel =
+    document.getElementById("adminPanel");
+
+
+/* ==================================================
+   MESSAGE FUNCTIONS
+================================================== */
+
+function now(){
+
+    return new Date().toLocaleTimeString([],{
+        hour:"2-digit",
+        minute:"2-digit"
+    });
+
+}
+
+
+function addMessage(text,user=false){
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        user ? "message user" : "message bot";
+
+    wrapper.innerHTML = `
+
+        ${!user ? `
+            <div class="bot-avatar">AVI</div>
+        ` : ""}
+
+        <div class="bubble">
+
+            ${text}
+
+            <div class="time">
+                ${now()}
+            </div>
+
+        </div>
+
+    `;
+
+    messages.appendChild(wrapper);
+
+    messages.scrollTo({
+        top:messages.scrollHeight,
+        behavior:"smooth"
+    });
+
+    return wrapper;
+
+}
+
+
+function userMessage(text){
+
+    addMessage(text,true);
+
+}
+
+
+function typing(){
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className="message bot";
+
+    wrapper.innerHTML=`
+
+        <div class="bot-avatar">AVI</div>
+
+        <div class="bubble">
+
+            <div class="typing">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+
+        </div>
+
+    `;
+
+    messages.appendChild(wrapper);
+
+    messages.scrollTo({
+        top:messages.scrollHeight,
+        behavior:"smooth"
+    });
+
+    return wrapper;
+
+}
+
+
+function bot(text,delay=650){
+
+    const loader =
+        typing();
+
+    setTimeout(()=>{
+
+        loader.remove();
+
+        addMessage(text);
+
+    },delay);
+
+}
+
+
+/* ==================================================
+   VALIDATION
+================================================== */
+
+function validPhone(value){
+
+    const clean =
+        value.replace(/[\s()-]/g,"");
+
+    return /^\+?[0-9]{9,15}$/.test(clean);
+
+}
+
+
+function requestId(){
+
+    const random =
+        Math.random()
+        .toString(36)
+        .substring(2,7)
+        .toUpperCase();
+
+    return "AVI-" +
+        Date.now().toString().slice(-6) +
+        "-" +
+        random;
+
+}
+
+
+/* ==================================================
+   WELCOME
+================================================== */
+
+setTimeout(()=>{
+
+    addMessage(`
+
+        <strong>Welcome to Aviator Account Manager.</strong>
+
+        <br><br>
+
+        Start by entering the phone number
+        associated with your account.
+
+        <br><br>
+
+        <span style="color:#8b95a5;font-size:10px">
+            Your request will be reviewed before
+            any account-management access is activated.
+        </span>
+
+    `);
+
+},400);
+
+
+/* ==================================================
+   FORM
+================================================== */
+
+form.addEventListener("submit",function(e){
+
+    e.preventDefault();
+
+    const value =
+        input.value.trim();
+
+    if(!value) return;
+
+    userMessage(value);
+
+    input.value="";
+
+    process(value);
+
+});
+
+
+/* ==================================================
+   FLOW
+================================================== */
+
+function process(value){
+
+    const lower =
+        value.toLowerCase();
+
+
+    /* RESTART */
+
+    if(
+        lower === "restart" ||
+        lower === "start" ||
+        lower === "menu"
+    ){
+
+        restart();
+
+        return;
+
+    }
+
+
+    /* PHONE */
+
+    if(step === 0){
+
+        if(!validPhone(value)){
+
+            bot(`
+
+                <strong>Invalid phone number.</strong>
+
+                <br><br>
+
+                Please enter a valid phone number.
+
+                <br><br>
+
+                Example:
+                <strong>+254712345678</strong>
+
+            `);
+
+            return;
+        }
+
+        account.phone = value;
+
+        step = 1;
+
+        phoneReceived();
+
+        return;
+    }
+
+
+    /* MANUAL BETTING SITE */
+
+    if(step === 1){
+
+        if(value.trim().length < 2){
+
+            bot(`
+
+                Please enter the name of your
+                betting site manually.
+
+            `);
+
+            return;
+        }
+
+        account.bettingSite =
+            value.trim();
+
+        step = 2;
+
+        siteReceived();
+
+        return;
+    }
+
+
+    /* PLAN */
+
+    if(step === 2){
+
+        const index =
+            parseInt(value,10) - 1;
+
+        if(
+            index >= 0 &&
+            index < PLANS.length
+        ){
+
+            account.plan =
+                PLANS[index];
+
+            step = 3;
+
+            review();
+
+        }else{
+
+            bot(`
+
+                Please select one of the
+                available periods shown above.
+
+            `);
+
+        }
+
+        return;
+    }
+
+
+    /* REVIEW */
+
+    if(step === 3){
+
+        bot(`
+
+            Your request is ready.
+
+            <br><br>
+
+            Use <strong>Confirm request</strong>
+            to submit it.
+
+        `);
+
+    }
+
+}
+
+
+/* ==================================================
+   PHONE RECEIVED
+================================================== */
+
+function phoneReceived(){
+
+    bot(`
+
+        <strong>Phone number received.</strong>
+
+        <div class="system-code">
+
+            <span class="comment">
+                # account verification request
+            </span><br>
+
+            <span class="key">phone</span> =
+            <span class="value">"${account.phone}"</span><br>
+
+            <span class="key">status</span> =
+            <span class="value">"received"</span><br>
+
+            <span class="key">next</span> =
+            <span class="value">"betting_site"</span>
+
+        </div>
+
+        <br>
+
+        Now enter the name of your
+        <strong>betting site</strong>.
+
+        <br><br>
+
+        Type the name manually.
+
+    `,700);
+
+    setTimeout(sitePrompt,1100);
+
+}
+
+
+/* ==================================================
+   SITE PROMPT
+================================================== */
+
+function sitePrompt(){
+
+    const wrapper =
+        addMessage(`
+
+            <strong>Enter betting site</strong>
+
+            <br>
+
+            Type the exact site name below.
+
+        `);
+
+    const box =
+        document.createElement("div");
+
+    box.className="site-box";
+
+    box.innerHTML=`
+
+        <input
+            id="siteInput"
+            type="text"
+            placeholder="Enter betting site name..."
+        >
+
+        <button onclick="submitSite()">
+            Continue
+        </button>
+
+    `;
+
+    wrapper
+        .querySelector(".bubble")
+        .appendChild(box);
+
+    const field =
+        document.getElementById("siteInput");
+
+    field.focus();
+
+    field.addEventListener(
+        "keydown",
+        function(e){
+
+            if(e.key === "Enter"){
+
+                e.preventDefault();
+
+                submitSite();
+
+            }
+
+        }
+    );
+
+}
+
+
+function submitSite(){
+
+    const field =
+        document.getElementById("siteInput");
+
+    if(!field) return;
+
+    const site =
+        field.value.trim();
+
+    if(!site){
+
+        field.focus();
+
+        return;
+    }
+
+    userMessage(site);
+
+    account.bettingSite =
+        site;
+
+    step = 2;
+
+    siteReceived();
+
+}
+
+
+/* ==================================================
+   SITE RECEIVED
+================================================== */
+
+function siteReceived(){
+
+    bot(`
+
+        <strong>Betting site recorded.</strong>
+
+        <div class="system-code">
+
+            <span class="comment">
+                # account configuration
+            </span><br>
+
+            <span class="key">phone</span> =
+            <span class="value">"${account.phone}"</span><br>
+
+            <span class="key">betting_site</span> =
+            <span class="value">"${account.bettingSite}"</span><br>
+
+            <span class="key">status</span> =
+            <span class="value">"site_received"</span><br>
+
+            <span class="key">next</span> =
+            <span class="value">"select_period"</span>
+
+        </div>
+
+        <br>
+
+        Select the period you require.
+
+        <br><br>
+
+        <strong>Starting price: KSh 1,000 / hour</strong>
+
+    `,700);
+
+    setTimeout(showPlans,1100);
+
+}
+
+
+/* ==================================================
+   PLANS
+================================================== */
+
+function showPlans(){
+
+    const wrapper =
+        addMessage(`
+
+            <strong>Available periods</strong>
+
+            <br>
+
+            Choose one option below.
+
+        `);
+
+    const list =
+        document.createElement("div");
+
+    list.className="price-list";
+
+
+    PLANS.forEach((plan,index)=>{
+
+        const button =
+            document.createElement("button");
+
+        button.className="price";
+
+        button.innerHTML=`
+
+            <div class="price-left">
+
+                <div class="price-number">
+                    ${index + 1}
+                </div>
+
+                <div>
+
+                    <div class="price-name">
+                        ${plan.name}
+                    </div>
+
+                    <div class="price-sub">
+                        ${plan.detail}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="price-cost">
+                KSh ${plan.price.toLocaleString()}
+            </div>
+
+        `;
+
+
+        button.onclick=()=>{
+
+            document
+                .querySelectorAll(".price")
+                .forEach(x=>{
+                    x.classList.remove("selected");
+                });
+
+            button.classList.add("selected");
+
+            userMessage(
+                `${index + 1}. ${plan.name} — KSh ${plan.price.toLocaleString()}`
+            );
+
+            account.plan =
+                plan;
+
+            step = 3;
+
+            review();
+
+        };
+
+
+        list.appendChild(button);
+
+    });
+
+
+    wrapper
+        .querySelector(".bubble")
+        .appendChild(list);
+
+}
+
+
+/* ==================================================
+   REVIEW
+================================================== */
+
+function review(){
+
+    const plan =
+        account.plan;
+
+    bot(`
+
+        <strong>Review request</strong>
+
+        <div class="system-code">
+
+            <span class="comment">
+                # account management request
+            </span><br>
+
+            <span class="key">phone</span> =
+            <span class="value">"${account.phone}"</span><br>
+
+            <span class="key">betting_site</span> =
+            <span class="value">"${account.bettingSite}"</span><br>
+
+            <span class="key">period</span> =
+            <span class="value">"${plan.name}"</span><br>
+
+            <span class="key">amount</span> =
+            <span class="value">
+                "KSh ${plan.price.toLocaleString()}"
+            </span><br>
+
+            <span class="key">status</span> =
+            <span class="value">"READY_FOR_SUBMISSION"</span>
+
+        </div>
+
+        <br>
+
+        Confirm the request when the details
+        are correct.
+
+    `,700);
+
+
+    setTimeout(()=>{
+
+        const wrapper =
+            addMessage("<strong>Submit this request?</strong>");
+
+        const buttons =
+            document.createElement("div");
+
+        buttons.className="quick-buttons";
+
+        buttons.innerHTML=`
+
+            <button
+                class="quick-btn primary"
+                onclick="confirmRequest()">
+
+                Confirm request
+
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="restart()">
+
+                Start over
+
+            </button>
+
+        `;
+
+        wrapper
+            .querySelector(".bubble")
+            .appendChild(buttons);
+
+    },1000);
+
+}
+
+
+/* ==================================================
+   CONFIRM
+================================================== */
+
+function confirmRequest(){
+
+    userMessage("Confirm request");
+
+    submitRequest();
+
+}
+
+
+/* ==================================================
+   SUBMIT REQUEST
+================================================== */
+
+function submitRequest(){
+
+    account.requestId =
+        requestId();
+
+    account.status =
+        "PENDING_REVIEW";
+
+    step = 4;
+
+
+    localStorage.setItem(
+        "aviatorAccountRequest",
+        JSON.stringify(account)
+    );
+
+
+    bot(`
+
+        <strong>Request submitted.</strong>
+
+        <br><br>
+
+        Your request has been recorded and is
+        waiting for review.
+
+    `,750);
+
+
+    setTimeout(()=>{
+
+        const wrapper =
+            addMessage(`
+
+                <strong>Request status</strong>
+
+                <div class="system-code">
+
+                    <span class="comment">
+                        # request processing
+                    </span><br>
+
+                    <span class="key">request_id</span> =
+                    <span class="value">"${account.requestId}"</span><br>
+
+                    <span class="key">site</span> =
+                    <span class="value">"${account.bettingSite}"</span><br>
+
+                    <span class="key">period</span> =
+                    <span class="value">"${account.plan.name}"</span><br>
+
+                    <span class="key">amount</span> =
+                    <span class="value">
+                        "KSh ${account.plan.price.toLocaleString()}"
+                    </span><br>
+
+                    <span class="key">status</span> =
+                    <span class="value">"PENDING_REVIEW"</span>
+
+                </div>
+
+                <br>
+
+                Your request is pending review.
+                Any account access or activation
+                should only occur after authorization
+                has been completed.
+
+            `);
+
+
+        const buttons =
+            document.createElement("div");
+
+        buttons.className="quick-buttons";
+
+        buttons.innerHTML=`
+
+            <button
+                class="quick-btn primary"
+                onclick="openAdminChat()">
+
+                Send to Admin
+
+            </button>
+
+            <button
+                class="quick-btn"
+                onclick="restart()">
+
+                New request
+
+            </button>
+
+        `;
+
+
+        wrapper
+            .querySelector(".bubble")
+            .appendChild(buttons);
+
+    },1300);
+
+}
+
+
+/* ==================================================
+   ADMIN CHAT
+================================================== */
+
+function openAdminChat(){
+
+    if(!account.phone ||
+       !account.bettingSite ||
+       !account.plan){
+
+        alert("Complete a request first.");
+
+        return;
+    }
+
+
+    const message =
+`Hello, I have submitted an account-management request.
+
+Request ID: ${account.requestId}
+Phone: ${account.phone}
+Betting site: ${account.bettingSite}
+Period: ${account.plan.name}
+Amount: KSh ${account.plan.price.toLocaleString()}
+Status: ${account.status}
+
+Please review my request.`;
+
+
+    const url =
+        "https://wa.me/" +
+        ADMIN_CHAT_NUMBER +
+        "?text=" +
+        encodeURIComponent(message);
+
+
+    window.open(url,"_blank");
+
+}
+
+
+/* ==================================================
+   BOTTOM ADMIN TAB
+================================================== */
+
+function toggleAdmin(button){
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(x=>{
+            x.classList.remove("active");
+        });
+
+    button.classList.add("active");
+
+    adminPanel.classList.toggle("show");
+
+}
+
+
+function navHome(button){
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(x=>{
+            x.classList.remove("active");
+        });
+
+    button.classList.add("active");
+
+    adminPanel.classList.remove("show");
+
+    messages.scrollTo({
+        top:messages.scrollHeight,
+        behavior:"smooth"
+    });
+
+}
+
+
+function showRequest(button){
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(x=>{
+            x.classList.remove("active");
+        });
+
+    button.classList.add("active");
+
+    adminPanel.classList.remove("show");
+
+
+    const saved =
+        localStorage.getItem(
+            "aviatorAccountRequest"
+        );
+
+
+    if(!saved){
+
+        bot(`
+
+            <strong>No request found.</strong>
+
+            <br><br>
+
+            Complete an account-management request
+            first and it will appear here.
+
+        `);
+
+        return;
+    }
+
+
+    const data =
+        JSON.parse(saved);
+
+
+    addMessage(`
+
+        <strong>My request</strong>
+
+        <div class="system-code">
+
+            <span class="key">request_id</span> =
+            <span class="value">"${data.requestId}"</span><br>
+
+            <span class="key">phone</span> =
+            <span class="value">"${data.phone}"</span><br>
+
+            <span class="key">site</span> =
+            <span class="value">"${data.bettingSite}"</span><br>
+
+            <span class="key">period</span> =
+            <span class="value">"${data.plan.name}"</span><br>
+
+            <span class="key">amount</span> =
+            <span class="value">
+                "KSh ${data.plan.price.toLocaleString()}"
+            </span><br>
+
+            <span class="key">status</span> =
+            <span class="value">"${data.status}"</span>
+
+        </div>
+
+    `);
+
+}
+
+
+/* ==================================================
+   RESTART
+================================================== */
+
+function restart(){
+
+    account = {
+        phone:"",
+        bettingSite:"",
+        plan:null,
+        requestId:"",
+        status:""
+    };
+
+    step = 0;
+
+    localStorage.removeItem(
+        "aviatorAccountRequest"
+    );
+
+    adminPanel.classList.remove("show");
+
+    input.placeholder =
+        "Enter your phone number...";
+
+    bot(`
+
+        <strong>New request started.</strong>
+
+        <br><br>
+
+        Enter your phone number to continue.
+
+    `);
+
+    input.focus();
+
+}
+
+input.focus();
+
+</script>
+
+</body>
+  </html>
